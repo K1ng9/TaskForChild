@@ -73,6 +73,28 @@ public class DB {
     }
 
     //обновить инфу
+    public void updateTaskStatus(String id){
+        ContentValues cv = new ContentValues();
+        cv.put(C_STATUS, 1);
+        //обновляем по id
+        int updCount = mDB.update("mytable", cv, "id = ?",
+                new String[]{id});
+        Log.d(LOG_TAG, "updated rows count = " + updCount);
+    }
+
+    public void updateTaskDone(String id){
+        ContentValues cv = new ContentValues();
+        cv.put(C_DONE, 1);
+        //обновляем по id
+        int updCount = mDB.update("mytable", cv, "id = ?",
+                new String[] {id});
+        Log.d(LOG_TAG, "updated rows count = " + updCount);
+    }
+
+    public Cursor sortByTime() {
+        return mDB.query("mytable", null, null, null, C_TIME, null, null);
+    }
+
 
     // удалить запись из DB_TABLE
     public void delTask(long id) {

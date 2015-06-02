@@ -78,7 +78,7 @@ public class AddTask extends Activity  {
         }
     }
 
-    void  deleteYear(){// не пашет
+    void  deleteYear(){//пашет
         DatePicker dp = findDatePicker(ll3);
         if (dp != null) {
             try {
@@ -111,20 +111,6 @@ public class AddTask extends Activity  {
         return null;
 
     }
-
-    private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
-        public void onTimeSet(TimePicker view, int selectedHour,
-                              int selectedMinute) {
-            hour = selectedHour;
-            minute = selectedMinute;
-
-            // set current time into timepicker
-            timePicker1.setCurrentHour(hour);
-            timePicker1.setCurrentMinute(minute);
-            etTime.setText(hour+":"+minute);
-
-        }
-    };
 
     @Override
     protected void onDestroy() {

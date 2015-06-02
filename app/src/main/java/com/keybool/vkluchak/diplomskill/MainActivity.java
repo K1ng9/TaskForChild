@@ -54,6 +54,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         lvList = (ListView) findViewById(R.id.lvList);
         tvDisplayTime = (TextView) findViewById(R.id.tvTime);
 
+        cursor = null;
+
 
         tvDisplayTime.setText(new StringBuilder().append(pad(hour)).append(":")
                 .append(pad(minute)));
@@ -62,6 +64,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         db = new DB(this);
         db.open();
         adapterListView();
+        //cursor = db.sortByTime();
+        //scAdapter.swapCursor(cursor);
     }
 
      public void onclick(View v){
