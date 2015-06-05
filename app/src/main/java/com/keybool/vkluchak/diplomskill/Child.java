@@ -20,7 +20,6 @@ public class Child {
 
         id = cursor.getInt(cursor.getColumnIndex(DB.C_IDC));
         clogin = cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
-        clogin = cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
         cemail = cursor.getString(cursor.getColumnIndex(DB.C_CEMAIL));
         cpassword = cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD));
         coins = cursor.getInt(cursor.getColumnIndex(DB.C_COINS));

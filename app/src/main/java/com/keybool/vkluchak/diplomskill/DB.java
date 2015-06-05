@@ -18,10 +18,10 @@ public class DB {
 
     private static final String DB_TABLE2 = "parent";//_________P-A-R-E-N-T_____________
 
-    private static final String C_IDP = "_id";
-    private static final String C_LOGIN = "login";
-    private static final String C_EMAIL = "email";
-    private static final String C_PASSWORD = "password";
+    public static final String C_IDP = "_id";
+    public static final String C_LOGIN = "login";
+    public static final String C_EMAIL = "email";
+    public static final String C_PASSWORD = "password";
 
     private static final String DB_CREATE2 =
             "create table " + DB_TABLE2 + " ("
@@ -222,6 +222,13 @@ public class DB {
         long rowID = mDB.insert(DB_TABLE, null, cv);
         Log.d(LOG_TAG, "row inserted, ID = " + rowID);
         //mDB.insert(DB_TABLE, null, cv);
+    }
+    public Cursor getParent(String login, String password){
+        String sqlQuery = "SELECT " + C_LOGIN + ", " + C_EMAIL +", " +
+                C_PASSWORD + " FROM " +DB_TABLE2 +" WHERE " + C_LOGIN + " = '" +
+                login + "' AND " +  C_PASSWORD + " = '" + password +"'";
+
+        return mDB.rawQuery(sqlQuery, null );
     }
 
     public void delAll(){
