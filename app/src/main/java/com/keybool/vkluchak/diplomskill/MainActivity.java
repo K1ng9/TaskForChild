@@ -39,6 +39,9 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     Cursor cursor;
 
     private static final int CM_DELETE_ID = 1;
+    private static final int CM_DOTASK_ID = 2;
+    private static final int CM_DONETASK_ID = 3;
+    private static final int CM_NOT_DONETASK_ID = 4;
 
 
     private int hour;
@@ -136,22 +139,30 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         @Override
         public Cursor loadInBackground() {
             Cursor cursor = db.getAllData();
-
             return cursor;
         }
     }
     //---------------------- онтекстное меню ------------------------------
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == CM_DELETE_ID) {
-            // получаем из пункта контекстного меню данные по пункту списка
-            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item
-                    .getMenuInfo();
-            // извлекаем id записи и удал€ем соответствующую запись в Ѕƒ
-            db.delTask(acmi.id);
-            // получаем новый курсор с данными
-            getSupportLoaderManager().getLoader(0).forceLoad();
-            return true;
+        // получаем из пункта контекстного меню данные по пункту списка
+        AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()){
+            case CM_DELETE_ID:
+                // извлекаем id записи и удал€ем соответствующую запись в Ѕƒ
+                db.delTask(acmi.id);
+                break;
+            case CM_DOTASK_ID:
+                db.updateTaskStatus(acmi.id);
+                break;
+            case CM_DONETASK_ID:
+                db.updateTaskDone(acmi.id);
+                break;
+            case CM_NOT_DONETASK_ID:
+                db.updateTaskNotDone(acmi.id);
+                break;
         }
+        // получаем новый курсор с данными
+        getSupportLoaderManager().getLoader(0).forceLoad();
         return super.onContextItemSelected(item);
 
     }
@@ -159,6 +170,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, CM_DELETE_ID, 0, R.string.delete_record);
+        menu.add(0, CM_DOTASK_ID, 0, "do task");
+        menu.add(0, CM_DONETASK_ID, 0, "done task");
     }
 
 
