@@ -14,9 +14,11 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
@@ -36,7 +38,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     Button btnAdd;
     Cursor cursor;
 
-    private TimePicker timePicker1;
+    private static final int CM_DELETE_ID = 1;
+
 
     private int hour;
     private int minute;
@@ -137,10 +140,32 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
             return cursor;
         }
     }
+    //---------------------- онтекстное меню ------------------------------
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == CM_DELETE_ID) {
+            // получаем из пункта контекстного меню данные по пункту списка
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item
+                    .getMenuInfo();
+            // извлекаем id записи и удал€ем соответствующую запись в Ѕƒ
+            db.delTask(acmi.id);
+            // получаем новый курсор с данными
+            getSupportLoaderManager().getLoader(0).forceLoad();
+            return true;
+        }
+        return super.onContextItemSelected(item);
+
+    }
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, CM_DELETE_ID, 0, R.string.delete_record);
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        getSupportLoaderManager().getLoader(0).forceLoad();
         //adapterListView();
     }
 
