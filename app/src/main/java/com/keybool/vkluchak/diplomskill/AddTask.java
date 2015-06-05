@@ -71,7 +71,7 @@ public class AddTask extends Activity  {
         switch (v.getId()) {
             case R.id.btnAddTask:
                 //time =timePickerListener;
-                db.addTask(name, award, time, 0, 0);
+                db.addTask(name, award, time, 0, 0, 0);// id child need
                 Log.d(LOG_TAG, "----Done----");
                 //onDestroy();
                 break;

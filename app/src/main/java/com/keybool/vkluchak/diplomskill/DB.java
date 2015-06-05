@@ -38,13 +38,13 @@ public class DB {
 
     private static final String DB_TABLE3 = "child";//____________C-H-I-L-D______________
 
-    private static final String C_IDC = "_id";
-    private static final String C_CLOGIN = "login";
-    private static final String C_CEMAIL = "email";
-    private static final String C_CPASSWORD = "password";
-    private static final String C_COINS = "coins";
-    private static final String C_LEVL = "levl";
-    private static final String C_PARENT = "parent";
+    public static final String C_IDC = "_id";
+    public static final String C_CLOGIN = "login";
+    public static final String C_CEMAIL = "email";
+    public static final String C_CPASSWORD = "password";
+    public static final String C_COINS = "coins";
+    public static final String C_LEVL = "levl";
+    public static final String C_PARENT = "parent";
 
     private static final String DB_CREATE3 =
             "create table "     + DB_TABLE3 + " ("
@@ -194,6 +194,15 @@ public class DB {
         long rowID = mDB.insert(DB_TABLE, null, cv);
         Log.d(LOG_TAG, "row inserted, ID = " + rowID);
         //mDB.insert(DB_TABLE, null, cv);
+    }
+
+    public Cursor getChild(String login, String password){
+        String sqlQuery = "SELECT " + C_CLOGIN + ", " + C_CEMAIL +", " +
+                C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL +
+                " FROM " +DB_TABLE3 +" WHERE " + C_CLOGIN + " = '" +
+                login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
+
+        return mDB.rawQuery(sqlQuery, null );
     }
 
 
