@@ -8,6 +8,7 @@ import android.database.Cursor;
 public class Parent {
     private String plogin, pemail, ppassword;
     private int id;
+    private int[] idOfChild;
 
     Cursor cursor;
 
@@ -38,5 +39,9 @@ public class Parent {
 
     public int getId() {
         return id;
+    }
+
+    public int[] getIdOfChild() {
+        return idOfChild;
     }
 }

@@ -26,25 +26,16 @@ public class Child {
         levl = cursor.getInt(cursor.getColumnIndex(DB.C_LEVL));
     }
 
+
+
     public String getClogin() {
         return clogin;
-    }
-
-    public void setClogin(String clogin) {
-        this.clogin = clogin;
     }
 
     public String getCemail() {
         return cemail;
     }
 
-    public void setCemail(String cemail) {
-        this.cemail = cemail;
-    }
-
-    public void setCpassword(String cpassword) {
-        this.cpassword = cpassword;
-    }
 
     public String getCpassword() {
         return cpassword;

@@ -71,6 +71,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         }else if(user == 0){
             Parent parent = new Parent(userName, password);
         }
+
+
         tvDisplayTime.setText(new StringBuilder().append(pad(hour)).append(":")
                 .append(pad(minute)));
 
