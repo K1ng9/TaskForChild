@@ -37,6 +37,10 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     private TextView tvDisplayTime;
     Button btnAdd;
     Cursor cursor;
+    Child child;
+
+    int user;
+    String password, userName;
 
     private static final int CM_DELETE_ID = 1;
     private static final int CM_DOTASK_ID = 2;
@@ -62,7 +66,11 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
         cursor = null;
 
-
+        if (user == 1 ) {
+            Child child = new Child(userName, password);
+        }else if(user == 0){
+            Parent parent = new Parent(userName, password);
+        }
         tvDisplayTime.setText(new StringBuilder().append(pad(hour)).append(":")
                 .append(pad(minute)));
 
@@ -178,6 +186,9 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     protected void onResume() {
         super.onResume();
+        user = getIntent().getIntExtra(SiginInActivity.USER, 0);
+        userName = getIntent().getStringExtra(SiginInActivity.USERNAME);
+        password = getIntent().getStringExtra(SiginInActivity.PASSWORD);
         getSupportLoaderManager().getLoader(0).forceLoad();
         //adapterListView();
     }
@@ -186,6 +197,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     protected void onDestroy() {
         super.onDestroy();
         // закрываем подключение при выходе
+        cursor.close();
         db.close();
     }
 }

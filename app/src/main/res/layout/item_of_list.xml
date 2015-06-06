@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_weight="1"
-        android:background="@mipmap/monety"
+        android:background="@drawable/money"
         android:layout_gravity="right"
         android:gravity="right" />
 

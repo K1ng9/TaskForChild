@@ -135,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@mipmap/ic_launcher"
+            android:background="@drawable/add"
             android:onClick="onclick"/>
 
         <ImageButton
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="150dp"
-            android:background="@mipmap/ic_launcher"
+            android:background="@drawable/add"
             android:onClick="onclick"/>
 
     </LinearLayout>

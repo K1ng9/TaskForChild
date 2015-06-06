@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by vkluc_000 on 28.05.2015.
+ * Created by K1ng9 on 28.05.2015.
  */
 public class DB {
     final String LOG_TAG = "myLogs";
@@ -35,6 +35,9 @@ public class DB {
     //запрос в базу для добавления
     //INSERT INTO parent (login, email, password) VALUES ('Simba', 'gmail', 'ytrewq2');
 
+    // создание индеков для логина
+    // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON parent( login )
+
 
     private static final String DB_TABLE3 = "child";//____________C-H-I-L-D______________
 
@@ -60,6 +63,9 @@ public class DB {
 
     //запрос в базу для добавления
     //INSERT INTO child (login, email, password, coins, levl) VALUES ('Son2', 'ukr.net', 'shglksdgsdjkl', 200, 5);
+
+    // создание индеков для логина
+    // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON child( login )
 
     private static final String DB_TABLE = "task";//______________T-A-S-K___________
 
@@ -205,6 +211,14 @@ public class DB {
         return mDB.rawQuery(sqlQuery, null );
     }
 
+    public Cursor idintifyChild(String login, String password){
+        String sqlQuery = "SELECT " + C_CLOGIN + ", " +
+                C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL + " FROM "
+                +DB_TABLE3 + " WHERE " + C_CLOGIN + " = '" +
+                login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
+        return mDB.rawQuery(sqlQuery, null );
+    }
+
 
 
 
@@ -230,6 +244,15 @@ public class DB {
 
         return mDB.rawQuery(sqlQuery, null );
     }
+
+    public Cursor idintifyParent(String login, String password){
+        String sqlQuery = "SELECT " + C_LOGIN + ", " +
+                C_PASSWORD +  " FROM "  +DB_TABLE2 + " WHERE " + C_CLOGIN + " = '" +
+                login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
+        return mDB.rawQuery(sqlQuery, null );
+    }
+
+
 
     public void delAll(){
         Log.d(LOG_TAG, "--- Clear mytable: ---");
