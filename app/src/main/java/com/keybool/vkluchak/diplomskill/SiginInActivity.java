@@ -36,38 +36,53 @@ public class SiginInActivity extends Activity {
             public void onClick(final View v) {
                 final String userName = etUserName.getText().toString();
                 final String password = etPassword.getText().toString();
-
                 signIn(userName, password);
             }
         });
 
+        // откриваем подлючение к ДБ
+        db = new DB(this);
+        db.open();
 
     }
 
     void signIn(String userName, String password){
 
-        cursor = db.idintifyChild(userName, password);
-        if(cursor != null){
+        String storedPassword=db.getParentEntry(userName);
+        String storedChildPassword=db.getChildEntry(userName);
+
+        if(password.equals(storedPassword)) {
+            //cursor = db.idintifyChild(userName, password);
+            //if(cursor.getCount() != 0){
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(USER, 1);
+            intent.putExtra("flag", false);
             intent.putExtra(USERNAME, userName);
             intent.putExtra(PASSWORD, password);
             startActivity(intent);
 
-        }else if((cursor = db.idintifyParent(userName, password))!= null){
+        }else if(password.equals(storedChildPassword)){
+        //}else if((db.idintifyParent(userName, password)).getCount() != 0){
 
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(USER, 0);
+            intent.putExtra("flag", true);
             intent.putExtra(USERNAME, userName);
             intent.putExtra(PASSWORD, password);
             startActivity(intent);
-        }else
-            Toast.makeText(this, "нету такого пользователя", Toast.LENGTH_LONG).show();
-        cursor.close();
+        }
+        else
+            Toast.makeText(this, "User Name or Password does not match", Toast.LENGTH_LONG).show();
+        //cursor.close();
     }
-    public void onclick(){
+
+    public void onclick(View view){
         Intent intent = new Intent(this, Register.class);
+        intent.putExtra("flag", false);
         startActivity(intent);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        db.close();
+    }
 }

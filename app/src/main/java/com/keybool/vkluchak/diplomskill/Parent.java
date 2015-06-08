@@ -1,6 +1,10 @@
 package com.keybool.vkluchak.diplomskill;
 
+import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
+
+import java.util.Objects;
 
 /**
  * Created by vkluc_000 on 05.06.2015.
@@ -8,40 +12,59 @@ import android.database.Cursor;
 public class Parent {
     private String plogin, pemail, ppassword;
     private int id;
-    private int[] idOfChild;
 
     Cursor cursor;
-
     DB db;
 
-    Parent(String login,String password) {
+    Parent(Context context, String login,String password) {
 
+        db = new DB(context);
+        db.open();
         cursor = db.getParent(login, password);
 
-        id = cursor.getInt(cursor.getColumnIndex(DB.C_IDP));
-        plogin = cursor.getString(cursor.getColumnIndex(DB.C_LOGIN));
-        pemail = cursor.getString(cursor.getColumnIndex(DB.C_EMAIL));
-        ppassword = cursor.getString(cursor.getColumnIndex(DB.C_PASSWORD));
-
+        if(cursor.getCount() <1) {
+            id = (int)cursor.getLong(cursor.getColumnIndex(DB.C_IDP));
+            plogin = cursor.getString(cursor.getColumnIndex(DB.C_LOGIN));
+            pemail = cursor.getString(cursor.getColumnIndex(DB.C_EMAIL));
+            ppassword = cursor.getString(cursor.getColumnIndex(DB.C_PASSWORD));
+        }
     }
 
     public String getPlogin() {
         return plogin;
     }
 
+    public void setPlogin(String plogin) {
+        this.plogin = plogin;
+    }
+
     public String getPemail() {
         return pemail;
     }
 
+    public void setPemail(String pemail) {
+        this.pemail = pemail;
+    }
+
+
     public String getPpassword() {
         return ppassword;
     }
+    public void setPpassword(String ppassword) {
+        this.ppassword = ppassword;
+    }
 
-    public int getId() {
+
+    public void setId(int id){
+        this.id = id;
+    }
+    public void addParent(){
+        if(plogin != null)
+        db.addParent(plogin, pemail, ppassword);
+
+    }
+    public long getId() {
         return id;
     }
 
-    public int[] getIdOfChild() {
-        return idOfChild;
-    }
 }

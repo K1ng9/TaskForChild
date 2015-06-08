@@ -1,51 +1,66 @@
 package com.keybool.vkluchak.diplomskill;
 
+import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 /**
  * Created by vkluc_000 on 05.06.2015.
  */
 public class Child {
-    private String clogin, cemail, cpassword,  parent;
-    private int id, coins, levl;
+    private String clogin, cemail, cpassword;
+
+    private int id, coins, levl,  parent;
 
     Cursor cursor;
 
     DB db;
+    Child(Context context, String login,String password) {
 
-    Child(String login,String password) {
-
+        db = new DB(context);
+        db.open();
         cursor = db.getChild(login, password);
 
-        id = cursor.getInt(cursor.getColumnIndex(DB.C_IDC));
-        clogin = cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
-        cemail = cursor.getString(cursor.getColumnIndex(DB.C_CEMAIL));
-        cpassword = cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD));
-        coins = cursor.getInt(cursor.getColumnIndex(DB.C_COINS));
-        levl = cursor.getInt(cursor.getColumnIndex(DB.C_LEVL));
+        if(cursor.getCount() != 0){
+            id = cursor.getInt(cursor.getColumnIndex(DB.C_IDC));
+            clogin = cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
+            cemail = cursor.getString(cursor.getColumnIndex(DB.C_CEMAIL));
+            cpassword = cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD));
+            coins = cursor.getInt(cursor.getColumnIndex(DB.C_COINS));
+            levl = cursor.getInt(cursor.getColumnIndex(DB.C_LEVL));
+        }
     }
+    public void addChild(){
+        if(clogin != null)
+            db.addChild(clogin, cemail, cpassword, parent);
 
-
+    }
 
     public String getClogin() {
         return clogin;
+    }
+    public void setClogin(String clogin) {
+        this.clogin = clogin;
     }
 
     public String getCemail() {
         return cemail;
     }
-
+    public void setCemail(String cemail) {
+        this.cemail = cemail;
+    }
 
     public String getCpassword() {
         return cpassword;
     }
+    public void setCpassword(String cpassword) {
+        this.cpassword = cpassword;
+    }
 
-    public String getParent() {
+    public int getParent() {
         return parent;
     }
 
-    public void setParent(String parent) {
+    public void setParent(int parent) {
         this.parent = parent;
     }
 

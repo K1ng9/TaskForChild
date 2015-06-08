@@ -1,8 +1,5 @@
 package com.keybool.vkluchak.diplomskill;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,21 +8,16 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 
 
@@ -34,14 +26,16 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     DB db;
     SimpleCursorAdapter scAdapter;
     ListView lvList;
-    private TextView tvDisplayTime;
+    //private TextView tvDisplayTime;
     Button btnAdd;
     Cursor cursor;
     Child child;
-
-    int user;
+    Parent parent;
+    boolean flag;
     String password, userName;
 
+    TextView tvLogin, tvCoins, tvDisplayTime;
+    ProgressBar pbLevl;
     private static final int CM_DELETE_ID = 1;
     private static final int CM_DOTASK_ID = 2;
     private static final int CM_DONETASK_ID = 3;
@@ -63,18 +57,28 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         btnAdd = (Button) findViewById(R.id.btnAdd);
         lvList = (ListView) findViewById(R.id.lvList);
         tvDisplayTime = (TextView) findViewById(R.id.tvTime);
+        tvLogin = (TextView) findViewById(R.id.tvLogin);
+        tvCoins = (TextView) findViewById(R.id.tvCoins);
+        pbLevl = (ProgressBar) findViewById(R.id.pbLevl);
 
         cursor = null;
 
-        if (user == 1 ) {
-            Child child = new Child(userName, password);
-        }else if(user == 0){
-            Parent parent = new Parent(userName, password);
+        flag = getIntent().getBooleanExtra(Register.FLAG, false);
+        if (flag) {
+            child = new Child(this, userName, password);
+            tvLogin.setText(child.getClogin());
+            tvCoins.setText(child.getCoins());
         }
-
+        else {
+            parent = new Parent(this, userName, password);
+            tvLogin.setText(parent.getPlogin());
+            pbLevl.setVisibility(View.GONE);
+        }
 
         tvDisplayTime.setText(new StringBuilder().append(pad(hour)).append(":")
                 .append(pad(minute)));
+
+
 
         // откриваем подлючение к ДБ
         db = new DB(this);
@@ -188,7 +192,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     protected void onResume() {
         super.onResume();
-        user = getIntent().getIntExtra(SiginInActivity.USER, 0);
+        //user = getIntent().getIntExtra(SiginInActivity.USER, 0);
         userName = getIntent().getStringExtra(SiginInActivity.USERNAME);
         password = getIntent().getStringExtra(SiginInActivity.PASSWORD);
         getSupportLoaderManager().getLoader(0).forceLoad();

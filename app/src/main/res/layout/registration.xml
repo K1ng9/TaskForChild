@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="Child Login"
@@ -89,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="Child Email"
@@ -109,12 +109,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
             android:text="Child Password"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="0dp"/>
         <EditText
             android:id="@+id/etCPassword"
             android:layout_width="match_parent"
@@ -125,7 +124,7 @@
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll7"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="25dp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -134,16 +133,6 @@
             android:id="@+id/btnAddParent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/add"
-            android:onClick="onclick"/>
-
-        <ImageButton
-            android:id="@+id/btnAddChild"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="150dp"
             android:background="@drawable/add"
             android:onClick="onclick"/>
 

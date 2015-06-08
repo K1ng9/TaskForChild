@@ -16,19 +16,19 @@ public class DB {
     private static final String DB_NAME = "dbDiplom";
     private static final int DB_VERSION = 1;
 
-    private static final String DB_TABLE2 = "parent";//_________P-A-R-E-N-T_____________
+    private static final String DB_PARENT = "parent";//_________P-A-R-E-N-T_____________
 
     public static final String C_IDP = "_id";
     public static final String C_LOGIN = "login";
     public static final String C_EMAIL = "email";
     public static final String C_PASSWORD = "password";
 
-    private static final String DB_CREATE2 =
-            "create table " + DB_TABLE2 + " ("
+    private static final String DB_CREATEPARENT =
+            "create table " + DB_PARENT + " ("
                     + C_IDP + " integer primary key autoincrement, " +
                     C_LOGIN + " text, " +
                     C_EMAIL + " text, " +
-                    C_PASSWORD + " text, " +
+                    C_PASSWORD + " text" +
                     ");" ;
 
 
@@ -39,7 +39,7 @@ public class DB {
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON parent( login )
 
 
-    private static final String DB_TABLE3 = "child";//____________C-H-I-L-D______________
+    private static final String DB_CHILD = "child";//____________C-H-I-L-D______________
 
     public static final String C_IDC = "_id";
     public static final String C_CLOGIN = "login";
@@ -49,8 +49,8 @@ public class DB {
     public static final String C_LEVL = "levl";
     public static final String C_PARENT = "parent";
 
-    private static final String DB_CREATE3 =
-            "create table "     + DB_TABLE3 + " ("
+    private static final String DB_CREATECHILD =
+            "create table "     + DB_CHILD + " ("
                     + C_IDC     + " integer primary key autoincrement, " +
                     C_CLOGIN    + " text, " +
                     C_CEMAIL    + " text, " +
@@ -58,7 +58,7 @@ public class DB {
                     C_COINS     + " int, "  +
                     C_LEVL      + " int, "  +
                     C_PARENT    + " int, "  +
-                    "FOREIGN KEY(" + C_PARENT + ") REFERENCES " + DB_TABLE2 +"(" + C_IDP + ")" +  ");";
+                    "FOREIGN KEY(" + C_PARENT + ") REFERENCES " + DB_PARENT +"(" + C_IDP + ")" +  ");";
 
 
     //запрос в базу для добавления
@@ -67,7 +67,7 @@ public class DB {
     // создание индеков для логина
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON child( login )
 
-    private static final String DB_TABLE = "task";//______________T-A-S-K___________
+    private static final String DB_TASK = "task";//______________T-A-S-K___________
 
     private static final String C_ID = "_id";
     public static final String C_NAME = "name";
@@ -77,16 +77,16 @@ public class DB {
     public static final String C_DONE = "done";
     public static final String C_CHILD = "child";
 
-    private static final String DB_CREATE =
-            "create table " + DB_TABLE + " ("
+    private static final String DB_CREATETASK =
+            "create table " + DB_TASK + " ("
                     + C_ID + " integer primary key autoincrement, " +
-                    C_NAME + " text, " +
-                    C_AWARD + " int, " +
-                    C_TIME + " text, " +
+                    C_NAME   + " text, " +
+                    C_AWARD  + " int, " +
+                    C_TIME   + " text, " +
                     C_STATUS + " int, " +
-                    C_DONE + " int" +
-                    C_CHILD + " int" +
-                    "FOREIGN KEY(" + C_CHILD + ") REFERENCES " + DB_TABLE3 +"(" + C_IDC + ")" + ");";
+                    C_DONE   + " int, " +
+                    C_CHILD  + " int, " +
+                    "FOREIGN KEY(" + C_CHILD + ") REFERENCES " + DB_CHILD +"(" + C_IDC + ")" + ");";
 
 
     // запрос в будзу даннх
@@ -113,6 +113,12 @@ public class DB {
         mDBHelper = new DBHelper(mCtx, DB_NAME, null, DB_VERSION);
         mDB = mDBHelper.getWritableDatabase();
     }
+    // открить подключение
+    public void openRead(){
+        mDBHelper = new DBHelper(mCtx, DB_NAME, null, DB_VERSION);
+        mDB = mDBHelper.getReadableDatabase();
+    }
+
     // закрить подлючение
     public void close(){
         if(mDBHelper!=null)
@@ -127,9 +133,9 @@ public class DB {
     // C_STATUS + " int, " +
     // C_DONE +   " int" +
     // C_CHILD +  " int" +
-    // получить все данные из таблицы DB_TABLE
+    // получить все данные из таблицы DB_TASK
     public Cursor getAllData(){
-        return mDB.query(DB_TABLE, null, null, null, null, null, null);
+        return mDB.query(DB_TASK, null, null, null, null, null, null);
     }
 
     // добавить запись
@@ -141,23 +147,23 @@ public class DB {
         cv.put(C_STATUS, status);
         cv.put(C_DONE, done);
         cv.put(C_CHILD, child);
-        long rowID = mDB.insert(DB_TABLE, null, cv);
+        long rowID = mDB.insert(DB_TASK, null, cv);
         Log.d(LOG_TAG, "row inserted, ID = " + rowID);
-        //mDB.insert(DB_TABLE, null, cv);
+
     }
     //обновить инфу
     public void updateTaskStatus(long id){
         ContentValues cv = new ContentValues();
         cv.put(C_STATUS, 1);
         //обновляем по id
-        int updCount = mDB.update(DB_TABLE, cv, C_ID + " = " + id, null);
+        int updCount = mDB.update(DB_TASK, cv, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "updated rows count = " + updCount);
     }
     public void updateTaskDone(long id){
         ContentValues cv = new ContentValues();
         cv.put(C_DONE, 1);
         //обновляем по id
-        int updCount = mDB.update(DB_TABLE, cv, C_ID + " = " + id, null);
+        int updCount = mDB.update(DB_TASK, cv, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "updated rows count = " + updCount);
     }
     public void updateTaskNotDone(long id){
@@ -165,7 +171,7 @@ public class DB {
         cv.put(C_STATUS, 0);
         cv.put(C_DONE, 0);
         //обновляем по id
-        int updCount = mDB.update(DB_TABLE, cv, C_ID + " = " + id, null);
+        int updCount = mDB.update(DB_TASK, cv, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "updated rows count = " + updCount);
     }
 
@@ -176,7 +182,7 @@ public class DB {
 
     // удалить запись из TASK
     public void delTask(long id) {
-        int clearCount =  mDB.delete(DB_TABLE, C_ID + " = " + id, null);
+        int clearCount =  mDB.delete(DB_TASK, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "deleted rows count = " + clearCount);
     }
     // -----------------------------------робота с таблицей CHILD----------------------------------
@@ -189,23 +195,23 @@ public class DB {
     // C_PARENT    + " int, "  +
 
     // добавить запись
-    public void addChild(String login, String email, String password, int coins, int levl, int parent ) {
+    public void addChild(String login, String email, String password, int parent ) {
         ContentValues cv = new ContentValues();
         cv.put(C_CLOGIN, login);
         cv.put(C_CEMAIL, email);
         cv.put(C_CPASSWORD, password);
-        cv.put(C_COINS, coins);
-        cv.put(C_LEVL, levl);
+        cv.put(C_COINS, 0);
+        cv.put(C_LEVL, 0);
         cv.put(C_PARENT, parent);
-        long rowID = mDB.insert(DB_TABLE, null, cv);
+        long rowID = mDB.insert(DB_CHILD, null, cv);
         Log.d(LOG_TAG, "row inserted, ID = " + rowID);
-        //mDB.insert(DB_TABLE, null, cv);
+
     }
 
     public Cursor getChild(String login, String password){
         String sqlQuery = "SELECT " + C_CLOGIN + ", " + C_CEMAIL +", " +
                 C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL +
-                " FROM " +DB_TABLE3 +" WHERE " + C_CLOGIN + " = '" +
+                " FROM " + DB_CHILD +" WHERE " + C_CLOGIN + " = '" +
                 login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
 
         return mDB.rawQuery(sqlQuery, null );
@@ -214,9 +220,22 @@ public class DB {
     public Cursor idintifyChild(String login, String password){
         String sqlQuery = "SELECT " + C_CLOGIN + ", " +
                 C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL + " FROM "
-                +DB_TABLE3 + " WHERE " + C_CLOGIN + " = '" +
+                + DB_CHILD + " WHERE " + C_CLOGIN + " = '" +
                 login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
         return mDB.rawQuery(sqlQuery, null );
+    }
+    public String getChildEntry(String userName)
+    {
+        Cursor cursor= mDB.query(DB_CHILD, null, " "+C_CLOGIN+"=?", new String[]{userName}, null, null, null);
+        if(cursor.getCount()<1) // UserName Not Exist
+        {
+            cursor.close();
+            return "NOT EXIST";
+        }
+        cursor.moveToFirst();
+        String password= cursor.getString(cursor.getColumnIndex("PASSWORD"));
+        cursor.close();
+        return password;
     }
 
 
@@ -233,23 +252,48 @@ public class DB {
         cv.put(C_LOGIN, login);
         cv.put(C_EMAIL, email);
         cv.put(C_PASSWORD, password);
-        long rowID = mDB.insert(DB_TABLE, null, cv);
+        long rowID = mDB.insert(DB_PARENT, null, cv);
         Log.d(LOG_TAG, "row inserted, ID = " + rowID);
-        //mDB.insert(DB_TABLE, null, cv);
+
+        //return rowID;
     }
     public Cursor getParent(String login, String password){
-        String sqlQuery = "SELECT " + C_LOGIN + ", " + C_EMAIL +", " +
-                C_PASSWORD + " FROM " +DB_TABLE2 +" WHERE " + C_LOGIN + " = '" +
+        String sqlQuery = "SELECT " + C_IDP + ", "+ C_LOGIN + ", " + C_EMAIL +", " +
+                C_PASSWORD + " FROM " + DB_PARENT +" WHERE " + C_LOGIN + " = '" +
                 login + "' AND " +  C_PASSWORD + " = '" + password +"'";
 
-        return mDB.rawQuery(sqlQuery, null );
+        Cursor cursor = mDB.rawQuery(sqlQuery, null);
+
+        if(cursor.getCount()<1) // UserName Not Exist
+        {
+            cursor.close();
+            return null;
+        }else {
+            cursor.moveToFirst();
+            Log.d(LOG_TAG, "cursor = " + cursor);
+            return cursor;
+        }
     }
 
     public Cursor idintifyParent(String login, String password){
         String sqlQuery = "SELECT " + C_LOGIN + ", " +
-                C_PASSWORD +  " FROM "  +DB_TABLE2 + " WHERE " + C_CLOGIN + " = '" +
-                login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
+                C_PASSWORD +  " FROM "  + DB_PARENT + " WHERE " + C_LOGIN + " = '" +
+                login + "' AND " +  C_PASSWORD + " = '" + password +"'";
         return mDB.rawQuery(sqlQuery, null );
+    }
+
+    public String getParentEntry(String userName)
+    {
+        Cursor cursor= mDB.query(DB_PARENT, null, C_LOGIN+"=?", new String[]{userName}, null, null, null);
+        if(cursor.getCount()<1) // UserName Not Exist
+        {
+            cursor.close();
+            return "NOT EXIST";
+        }
+        cursor.moveToFirst();
+        String password= cursor.getString(cursor.getColumnIndex(C_PASSWORD));
+        cursor.close();
+        return password;
     }
 
 
@@ -257,7 +301,7 @@ public class DB {
     public void delAll(){
         Log.d(LOG_TAG, "--- Clear mytable: ---");
         // удвляем id записb
-        mDB.delete(DB_TABLE, null, null);
+        mDB.delete(DB_TASK, null, null);
 
     }
 
@@ -281,16 +325,16 @@ public class DB {
         // создаем и заполняем БД
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DB_CREATE3);
-            db.execSQL(DB_CREATE);
-            db.execSQL(DB_CREATE2);
+            db.execSQL(DB_CREATECHILD);
+            db.execSQL(DB_CREATEPARENT);
+            db.execSQL(DB_CREATETASK);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            String query = "DROP TABLE IF EXISTS " + DB_TABLE;
-            String query2 = "DROP TABLE IF EXISTS " + DB_TABLE2;
-            String query3 = "DROP TABLE IF EXISTS " + DB_TABLE3;
+            String query = "DROP TABLE IF EXISTS " + DB_TASK;
+            String query2 = "DROP TABLE IF EXISTS " + DB_PARENT;
+            String query3 = "DROP TABLE IF EXISTS " + DB_CHILD;
             // Executes the query provided as long as the query isn't a select
             // or if the query doesn't return any data
             db.execSQL(query);

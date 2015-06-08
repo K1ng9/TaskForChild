@@ -1,9 +1,6 @@
 package com.keybool.vkluchak.diplomskill;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,10 +10,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
-import java.text.DateFormat;
 import java.util.Calendar;
 
 /**
@@ -39,7 +34,7 @@ public class AddTask extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addtask);
 
-        // откриваем подлючение к ДБ
+        //откриваем подлючение к ДБ
         db = new DB(this);
         db.open();
 
