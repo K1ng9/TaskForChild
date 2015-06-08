@@ -13,12 +13,11 @@ import android.widget.Toast;
  */
 public class SiginInActivity extends Activity {
 
-    EditText etUserName, etPassword;
-    View mSubmit;
-
     public static final String USER = "user";
     public static final String USERNAME = "userName";
     public static final String PASSWORD = "password";
+    EditText etUserName, etPassword;
+    View mSubmit;
     DB db;
 
     Cursor cursor;
@@ -60,9 +59,8 @@ public class SiginInActivity extends Activity {
             intent.putExtra(PASSWORD, password);
             startActivity(intent);
 
-        }else if(password.equals(storedChildPassword)){
+        } else if (password.equals(storedChildPassword)) {
         //}else if((db.idintifyParent(userName, password)).getCount() != 0){
-
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("flag", true);
             intent.putExtra(USERNAME, userName);

@@ -11,25 +11,15 @@ import android.util.Log;
  * Created by K1ng9 on 28.05.2015.
  */
 public class DB {
-    final String LOG_TAG = "myLogs";
-
-    private static final String DB_NAME = "dbDiplom";
-    private static final int DB_VERSION = 1;
-
-    private static final String DB_PARENT = "parent";//_________P-A-R-E-N-T_____________
-
     public static final String C_IDP = "_id";
     public static final String C_LOGIN = "login";
     public static final String C_EMAIL = "email";
     public static final String C_PASSWORD = "password";
-
-    private static final String DB_CREATEPARENT =
-            "create table " + DB_PARENT + " ("
-                    + C_IDP + " integer primary key autoincrement, " +
-                    C_LOGIN + " text, " +
-                    C_EMAIL + " text, " +
-                    C_PASSWORD + " text" +
-                    ");" ;
+    public static final String C_IDC = "_id";
+    public static final String C_CLOGIN = "login";
+    public static final String C_CEMAIL = "email";
+    public static final String C_CPASSWORD = "password";
+    public static final String C_COINS = "coins";
 
 
     //запрос в базу для добавления
@@ -37,28 +27,15 @@ public class DB {
 
     // создание индеков для логина
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON parent( login )
-
-
-    private static final String DB_CHILD = "child";//____________C-H-I-L-D______________
-
-    public static final String C_IDC = "_id";
-    public static final String C_CLOGIN = "login";
-    public static final String C_CEMAIL = "email";
-    public static final String C_CPASSWORD = "password";
-    public static final String C_COINS = "coins";
     public static final String C_LEVL = "levl";
     public static final String C_PARENT = "parent";
-
-    private static final String DB_CREATECHILD =
-            "create table "     + DB_CHILD + " ("
-                    + C_IDC     + " integer primary key autoincrement, " +
-                    C_CLOGIN    + " text, " +
-                    C_CEMAIL    + " text, " +
-                    C_CPASSWORD + " text, " +
-                    C_COINS     + " int, "  +
-                    C_LEVL      + " int, "  +
-                    C_PARENT    + " int, "  +
-                    "FOREIGN KEY(" + C_PARENT + ") REFERENCES " + DB_PARENT +"(" + C_IDP + ")" +  ");";
+    public static final String C_NAME = "name";
+    public static final String C_AWARD = "award";
+    public static final String C_TIME = "time";
+    public static final String C_STATUS = "status";
+    public static final String C_DONE = "done";
+    public static final String C_CHILD = "child";
+    private static final String DB_NAME = "dbDiplom";
 
 
     //запрос в базу для добавления
@@ -66,17 +43,28 @@ public class DB {
 
     // создание индеков для логина
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON child( login )
-
+    private static final int DB_VERSION = 1;
+    private static final String DB_PARENT = "parent";//_________P-A-R-E-N-T_____________
+    private static final String DB_CREATEPARENT =
+            "create table " + DB_PARENT + " ("
+                    + C_IDP + " integer primary key autoincrement, " +
+                    C_LOGIN + " text, " +
+                    C_EMAIL + " text, " +
+                    C_PASSWORD + " text" +
+                    ");";
+    private static final String DB_CHILD = "child";//____________C-H-I-L-D______________
+    private static final String DB_CREATECHILD =
+            "create table " + DB_CHILD + " ("
+                    + C_IDC + " integer primary key autoincrement, " +
+                    C_CLOGIN + " text, " +
+                    C_CEMAIL + " text, " +
+                    C_CPASSWORD + " text, " +
+                    C_COINS + " int, " +
+                    C_LEVL + " int, " +
+                    C_PARENT + " int, " +
+                    "FOREIGN KEY(" + C_PARENT + ") REFERENCES " + DB_PARENT + "(" + C_IDP + ")" + ");";
     private static final String DB_TASK = "task";//______________T-A-S-K___________
-
     private static final String C_ID = "_id";
-    public static final String C_NAME = "name";
-    public static final String C_AWARD = "award";
-    public static final String C_TIME = "time";
-    public static final String C_STATUS = "status";
-    public static final String C_DONE = "done";
-    public static final String C_CHILD = "child";
-
     private static final String DB_CREATETASK =
             "create table " + DB_TASK + " ("
                     + C_ID + " integer primary key autoincrement, " +
@@ -87,6 +75,7 @@ public class DB {
                     C_DONE   + " int, " +
                     C_CHILD  + " int, " +
                     "FOREIGN KEY(" + C_CHILD + ") REFERENCES " + DB_CHILD +"(" + C_IDC + ")" + ");";
+    final String LOG_TAG = "myLogs";
 
 
     // запрос в будзу даннх
@@ -100,7 +89,6 @@ public class DB {
     // SELECT name, award, time, status, child, login, email FROM task JOIN child GROUP BY time
 
     // SELECT name, award, time, status, child, login, email FROM task JOIN child ON child.id = task.child GROUP BY time
-
     private final Context mCtx;
     private DBHelper mDBHelper;
     private SQLiteDatabase mDB;
@@ -209,7 +197,7 @@ public class DB {
     }
 
     public Cursor getChild(String login, String password){
-        String sqlQuery = "SELECT " + C_CLOGIN + ", " + C_CEMAIL +", " +
+        String sqlQuery = "SELECT " + C_IDC + ", " + C_CLOGIN + ", " + C_CEMAIL + ", " +
                 C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL +
                 " FROM " + DB_CHILD +" WHERE " + C_CLOGIN + " = '" +
                 login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
@@ -217,13 +205,6 @@ public class DB {
         return mDB.rawQuery(sqlQuery, null );
     }
 
-    public Cursor idintifyChild(String login, String password){
-        String sqlQuery = "SELECT " + C_CLOGIN + ", " +
-                C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL + " FROM "
-                + DB_CHILD + " WHERE " + C_CLOGIN + " = '" +
-                login + "' AND " +  C_CPASSWORD + " = '" + password +"'";
-        return mDB.rawQuery(sqlQuery, null );
-    }
     public String getChildEntry(String userName)
     {
         Cursor cursor= mDB.query(DB_CHILD, null, " "+C_CLOGIN+"=?", new String[]{userName}, null, null, null);
@@ -233,7 +214,7 @@ public class DB {
             return "NOT EXIST";
         }
         cursor.moveToFirst();
-        String password= cursor.getString(cursor.getColumnIndex("PASSWORD"));
+        String password = cursor.getString(cursor.getColumnIndex(C_CPASSWORD));
         cursor.close();
         return password;
     }
@@ -262,25 +243,10 @@ public class DB {
                 C_PASSWORD + " FROM " + DB_PARENT +" WHERE " + C_LOGIN + " = '" +
                 login + "' AND " +  C_PASSWORD + " = '" + password +"'";
 
-        Cursor cursor = mDB.rawQuery(sqlQuery, null);
-
-        if(cursor.getCount()<1) // UserName Not Exist
-        {
-            cursor.close();
-            return null;
-        }else {
-            cursor.moveToFirst();
-            Log.d(LOG_TAG, "cursor = " + cursor);
-            return cursor;
-        }
+        return mDB.rawQuery(sqlQuery, null);
+        //}
     }
 
-    public Cursor idintifyParent(String login, String password){
-        String sqlQuery = "SELECT " + C_LOGIN + ", " +
-                C_PASSWORD +  " FROM "  + DB_PARENT + " WHERE " + C_LOGIN + " = '" +
-                login + "' AND " +  C_PASSWORD + " = '" + password +"'";
-        return mDB.rawQuery(sqlQuery, null );
-    }
 
     public String getParentEntry(String userName)
     {

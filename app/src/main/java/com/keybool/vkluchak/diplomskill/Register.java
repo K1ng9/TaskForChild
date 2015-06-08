@@ -11,10 +11,11 @@ import android.widget.LinearLayout;
  * Created by vkluc_000 on 05.06.2015.
  */
 public class Register extends Activity{
+    public static final String FLAG = "flag";
+    public static final String ID = "id";
     DB db;
     boolean flag;
     LinearLayout ll1,ll2,ll3,ll4,ll5,ll6;
-    public static final String FLAG = "flag";
     int idParent;
     EditText etLogin, etEmail, etPassword, etCLogin, etCEmail, etCPassword;
     //Button btnAddParent, btnAddChild;
@@ -24,7 +25,8 @@ public class Register extends Activity{
         setContentView(R.layout.registration);
 
         flag = getIntent().getBooleanExtra(FLAG, false);
-        idParent = getIntent().getIntExtra("id", 0);
+        idParent = getIntent().getIntExtra(ID, 0);
+
         ll1 =(LinearLayout) findViewById(R.id.ll1);
         ll2 =(LinearLayout) findViewById(R.id.ll2);
         ll3 =(LinearLayout) findViewById(R.id.ll3);

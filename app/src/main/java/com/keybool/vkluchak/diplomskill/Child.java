@@ -7,21 +7,19 @@ import android.database.Cursor;
  * Created by vkluc_000 on 05.06.2015.
  */
 public class Child {
-    private String clogin, cemail, cpassword;
-
-    private int id, coins, levl,  parent;
-
     Cursor cursor;
-
     DB db;
+    private String clogin, cemail, cpassword;
+    private int id, coins, levl, parent;
     Child(Context context, String login,String password) {
 
         db = new DB(context);
         db.open();
         cursor = db.getChild(login, password);
 
+        cursor.moveToFirst();
         if(cursor.getCount() != 0){
-            id = cursor.getInt(cursor.getColumnIndex(DB.C_IDC));
+            id = (int) cursor.getLong(cursor.getColumnIndex(DB.C_IDC));
             clogin = cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
             cemail = cursor.getString(cursor.getColumnIndex(DB.C_CEMAIL));
             cpassword = cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD));
