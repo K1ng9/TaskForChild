@@ -21,10 +21,8 @@ public class DB {
     public static final String C_CPASSWORD = "password";
     public static final String C_COINS = "coins";
 
-
     //запрос в базу для добавления
     //INSERT INTO parent (login, email, password) VALUES ('Simba', 'gmail', 'ytrewq2');
-
     // создание индеков для логина
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON parent( login )
     public static final String C_LEVL = "levl";
@@ -36,11 +34,8 @@ public class DB {
     public static final String C_DONE = "done";
     public static final String C_CHILD = "child";
     private static final String DB_NAME = "dbDiplom";
-
-
     //запрос в базу для добавления
     //INSERT INTO child (login, email, password, coins, levl) VALUES ('Son2', 'ukr.net', 'shglksdgsdjkl', 200, 5);
-
     // создание индеков для логина
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON child( login )
     private static final int DB_VERSION = 1;

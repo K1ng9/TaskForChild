@@ -1,10 +1,12 @@
 package com.keybool.vkluchak.diplomskill;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -12,7 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
 import java.lang.reflect.Field;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 
 /**
  * Created by vkluc_000 on 28.05.2015.
@@ -28,7 +36,8 @@ public class AddTask extends Activity  {
 
     static final int TIME_DIALOG_ID = 999;
     ImageButton btnAddTask;
-    EditText etName, etAward, etTime, etStar, etEndTime, etStatus;
+    int idChild;
+    EditText etName, etAward;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,33 +55,53 @@ public class AddTask extends Activity  {
 
         etName = (EditText) findViewById(R.id.etName);
         etAward = (EditText) findViewById(R.id.etAward);
-        etTime = (EditText) findViewById(R.id.etTime);
+        InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(etAward.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        idChild = getIntent().getIntExtra(Register.ID, 0);
 
         final Calendar c = Calendar.getInstance();
         hour = c.get(Calendar.HOUR_OF_DAY);
         minute = c.get(Calendar.MINUTE);
 
     }
+    private Calendar createAsCalendar()
+    {
+        // Convert a DatePicker and TimePicker control in to a calendar object. The time is
+        // stored in UTC minutes and unaffected by time zone
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
+        cal.set(Calendar.YEAR, 2015);
+        cal.set(Calendar.MONTH, datePicker1.getMonth());
+        cal.set(Calendar.DAY_OF_MONTH, datePicker1.getDayOfMonth());
+        cal.set(Calendar.HOUR_OF_DAY, timePicker1.getCurrentHour());
+        cal.set(Calendar.MINUTE, timePicker1.getCurrentMinute());
+        cal.set(Calendar.SECOND, 0);
+
+        return cal;
+    }
+
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Calendar date = createAsCalendar();
+        return dateFormat.format(date.getTime());
+    }
     public void onclick(View v) {
         String name = etName.getText().toString();
         int award = Integer.parseInt(etAward.getText().toString());
-        //String time = etTime.getText().toString();
-        String time = pad(timePicker1.getCurrentHour())+":" + pad(timePicker1.getCurrentMinute()) + " | "
-                    + pad(datePicker1.getDayOfMonth()) + "." +pad(datePicker1.getMonth()) + "";
 
-
+        String str = getDateTime();
         switch (v.getId()) {
             case R.id.btnAddTask:
                 //time =timePickerListener;
-                db.addTask(name, award, time, 0, 0, 0);// id child need
+                db.addTask(name, award, str, 0, 0, idChild);// id child need
                 Log.d(LOG_TAG, "----Done----");
                 //onDestroy();
                 break;
         }
     }
 
-    void  deleteYear(){//???????????????
+    void  deleteYear(){
         DatePicker dp = findDatePicker(ll3);
         if (dp != null) {
             try {
@@ -109,7 +138,6 @@ public class AddTask extends Activity  {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // ??????????????????????????? ????????????????????????????????? ????????? ??????????????????
         db.close();
     }
     private static String pad(int c) {

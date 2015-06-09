@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     Parent parent;
     boolean flag;
     String password, userName;
-    TextView tvLogin, tvCoins, tvDisplayTime;
+    TextView tvLogin, tvCoins, tvDisplayTime, tvChildName;
     ProgressBar pbLevl;
     LinearLayout llmain2;
     private int hour;
@@ -66,6 +66,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         tvDisplayTime = (TextView) findViewById(R.id.tvTime);
         tvLogin = (TextView) findViewById(R.id.tvLogin);
         tvCoins = (TextView) findViewById(R.id.tvCoins);
+        tvChildName = (TextView) findViewById(R.id.tvChildName);
         pbLevl = (ProgressBar) findViewById(R.id.pbLevl);
 
         cursor = null;
@@ -73,6 +74,10 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         flag = getIntent().getBooleanExtra(Register.FLAG, false);
         userName = getIntent().getStringExtra(SiginInActivity.USERNAME);
         password = getIntent().getStringExtra(SiginInActivity.PASSWORD);
+
+        // откриваем подлючение к ДБ
+        db = new DB(this);
+        db.open();
 
         if (flag) {
             child = new Child(this, userName, password);
@@ -84,21 +89,28 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
             parent = new Parent(this, userName, password);
             tvLogin.setText(parent.getPlogin());
             pbLevl.setVisibility(View.GONE);
-            //cursor = db.getChildByParent(parent.getId());
-            //cursor.moveToFirst();
-            //child = new Child(this, cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN)),
-            //                        cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD)));
+            tvChildName.setText(findChildOfParent());
+
         }
 
         tvDisplayTime.setText(new StringBuilder().append(pad(hour)).append(":")
                 .append(pad(minute)));
 
-        // откриваем подлючение к ДБ
-        db = new DB(this);
-        db.open();
+        //cursor.close();
+        cursor = null;
         //cursor = db.sortByTime();
         adapterListView();
         //scAdapter.swapCursor(cursor);
+    }
+    public String findChildOfParent(){
+        cursor = db.getChildByParent(parent.getId());
+        if(!(cursor.getCount() < 1) ){
+            cursor.moveToFirst();
+            child = new Child(this, cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN)),
+                                    cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD)));
+            return cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
+        }else
+            return "No Child";
     }
 
      public void onclick(View v){

@@ -26,6 +26,7 @@ public class Parent {
             pemail = cursor.getString(cursor.getColumnIndex(DB.C_EMAIL));
             ppassword = cursor.getString(cursor.getColumnIndex(DB.C_PASSWORD));
         }
+        cursor.close();
     }
 
     public String getPlogin() {
