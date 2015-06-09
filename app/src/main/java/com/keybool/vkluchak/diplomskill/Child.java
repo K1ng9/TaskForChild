@@ -77,4 +77,8 @@ public class Child {
     public void setLevl(int levl) {
         this.levl = levl;
     }
+
+    public int getId() {
+        return id;
+    }
 }

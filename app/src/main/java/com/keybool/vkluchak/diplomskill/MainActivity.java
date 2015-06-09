@@ -77,13 +77,17 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         if (flag) {
             child = new Child(this, userName, password);
             tvLogin.setText(child.getClogin());
-            tvCoins.setText(child.getCoins());
+            tvCoins.setText(" " + child.getCoins() + " ");
             llmain2.setVisibility(View.GONE);
         }
         else {
             parent = new Parent(this, userName, password);
             tvLogin.setText(parent.getPlogin());
             pbLevl.setVisibility(View.GONE);
+            //cursor = db.getChildByParent(parent.getId());
+            //cursor.moveToFirst();
+            //child = new Child(this, cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN)),
+            //                        cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD)));
         }
 
         tvDisplayTime.setText(new StringBuilder().append(pad(hour)).append(":")
@@ -101,6 +105,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         switch(v.getId()) {
             case R.id.btnAdd:
                 Intent intent = new Intent(this, AddTask.class);
+                intent.putExtra(Register.ID, child.getId());
                 startActivity(intent);
                 break;
             case R.id.btnAddChild:

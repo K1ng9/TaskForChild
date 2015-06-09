@@ -218,6 +218,14 @@ public class DB {
         cursor.close();
         return password;
     }
+    public Cursor getChildByParent(int ParentId){
+        String sqlQuery = "SELECT " + C_IDC + ", " + C_CLOGIN + ", " + C_CEMAIL + ", " +
+                C_CPASSWORD + ", " + C_COINS + ", " + C_LEVL +
+                " FROM " + DB_CHILD +" WHERE " + C_PARENT + " = '" +
+                ParentId + "'";
+
+        return mDB.rawQuery(sqlQuery, null );
+    }
 
 
 
