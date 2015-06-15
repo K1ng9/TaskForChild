@@ -41,8 +41,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     TextView tvLogin, tvCoins, tvDisplayTime, tvChildName;
     ProgressBar pbLevl;
     LinearLayout llmain2;
-    private int hour;
-    private int minute;
+    private int hour,  minute;
 
     private static String pad(int c) {
         if (c >= 10)
@@ -75,7 +74,6 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         userName = getIntent().getStringExtra(SiginInActivity.USERNAME);
         password = getIntent().getStringExtra(SiginInActivity.PASSWORD);
 
-        // откриваем подлючение к ДБ
         db = new DB(this);
         db.open();
 
@@ -98,8 +96,10 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
         //cursor.close();
         cursor = null;
-        //cursor = db.sortByTime();
+
+        //getSupportLoaderManager().getLoader(0).forceLoad();
         adapterListView();
+        //cursor = db.sortByTime();
         //scAdapter.swapCursor(cursor);
     }
     public String findChildOfParent(){
@@ -110,7 +110,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
                                     cursor.getString(cursor.getColumnIndex(DB.C_CPASSWORD)));
             return cursor.getString(cursor.getColumnIndex(DB.C_CLOGIN));
         }else
-            return "No Child";
+            return "Add  Child";
     }
 
      public void onclick(View v){
@@ -132,20 +132,31 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     public void adapterListView(){
 
         //----------------------------------------------------------------------------
-        // формируем столбцы сопоставления
         String[] from = new String[]{DB.C_NAME, DB.C_AWARD, DB.C_TIME };
         int[] to = new int[]{R.id.tvText1, R.id.tvText2, R.id.tvText3};
 
-        // создааем адаптер и настраиваем список
         scAdapter = new SimpleCursorAdapter(this, R.layout.item_of_list, cursor, from, to, 0);// null-cursor
         lvList.setAdapter(scAdapter);
-        // добавляем контекстное меню к списку
         registerForContextMenu(lvList);
 
-        // создаем лоадер для чтения данных
         getSupportLoaderManager().initLoader(0, null, this);
         //------------------------------------------------------------------------------
     }
+    @Override
+       protected void onResume() {
+        super.onResume();
+        //user = getIntent().getIntExtra(SiginInActivity.USER, 0);
+        getSupportLoaderManager().getLoader(0).forceLoad();
+        //adapterListView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cursor.close();
+        db.close();
+    }
+
 
     // -------------------------LOADER  -----------------------
     @Override
@@ -155,7 +166,9 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        scAdapter.swapCursor(cursor);
+        if(!(cursor.getCount() < 1) ) {
+            scAdapter.swapCursor(cursor);
+        }else scAdapter.swapCursor(null);
     }
 
 
@@ -165,13 +178,11 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         scAdapter.swapCursor(null);
     }
 
-    //----------------------Контекстное меню ------------------------------
+    //----------------------CONTEXT MENU ------------------------------
     public boolean onContextItemSelected(MenuItem item) {
-        // получаем из пункта контекстного меню данные по пункту списка
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case CM_DELETE_ID:
-                // извлекаем id записи и удаляем соответствующую запись в БД
                 db.delTask(acmi.id);
                 break;
             case CM_DOTASK_ID:
@@ -184,7 +195,6 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
                 db.updateTaskNotDone(acmi.id);
                 break;
         }
-        // получаем новый курсор с данными
         getSupportLoaderManager().getLoader(0).forceLoad();
         return super.onContextItemSelected(item);
 
@@ -192,27 +202,18 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
+
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, CM_DELETE_ID, 0, R.string.delete_record);
-        menu.add(0, CM_DOTASK_ID, 0, "do task");
-        menu.add(0, CM_DONETASK_ID, 0, "done task");
+        if (flag) {
+            menu.add(0, CM_DELETE_ID, 0, R.string.delete_record);
+            menu.add(0, CM_DOTASK_ID, 0, "do task");
+        } else{
+            menu.add(0, CM_DELETE_ID, 0, R.string.delete_record);
+            menu.add(0, CM_NOT_DONETASK_ID, 0, "not done task");
+            menu.add(0, CM_DONETASK_ID, 0, "done task");
+        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //user = getIntent().getIntExtra(SiginInActivity.USER, 0);
-        getSupportLoaderManager().getLoader(0).forceLoad();
-        //adapterListView();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // закрываем подключение при выходе
-        cursor.close();
-        db.close();
-    }
 
     static class MyCursorLoader extends CursorLoader {
         DB db;
@@ -224,6 +225,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
         @Override
         public Cursor loadInBackground() {
+             //cursor = db.mainSelect(child.getId());
             Cursor cursor = db.getAllData();
             return cursor;
         }

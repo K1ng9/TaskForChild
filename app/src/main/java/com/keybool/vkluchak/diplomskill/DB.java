@@ -3,6 +3,7 @@ package com.keybool.vkluchak.diplomskill;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.util.Log;
  * Created by K1ng9 on 28.05.2015.
  */
 public class DB {
+
     public static final String C_IDP = "_id";
     public static final String C_LOGIN = "login";
     public static final String C_EMAIL = "email";
@@ -21,9 +23,9 @@ public class DB {
     public static final String C_CPASSWORD = "password";
     public static final String C_COINS = "coins";
 
-    //запрос в базу для добавления
+    //?????? ? ???? ??? ??????????
     //INSERT INTO parent (login, email, password) VALUES ('Simba', 'gmail', 'ytrewq2');
-    // создание индеков для логина
+    // ???????? ??????? ??? ??????
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON parent( login )
     public static final String C_LEVL = "levl";
     public static final String C_PARENT = "parent";
@@ -34,9 +36,9 @@ public class DB {
     public static final String C_DONE = "done";
     public static final String C_CHILD = "child";
     private static final String DB_NAME = "dbDiplom";
-    //запрос в базу для добавления
+    //?????? ? ???? ??? ??????????
     //INSERT INTO child (login, email, password, coins, levl) VALUES ('Son2', 'ukr.net', 'shglksdgsdjkl', 200, 5);
-    // создание индеков для логина
+    // ???????? ??????? ??? ??????
     // CREATE UNIQUE INDEX IF NOT EXISTS index_login_parent ON child( login )
     private static final int DB_VERSION = 1;
     private static final String DB_PARENT = "parent";//_________P-A-R-E-N-T_____________
@@ -73,10 +75,10 @@ public class DB {
     final String LOG_TAG = "myLogs";
 
 
-    // запрос в будзу даннх
+    // ?????? ? ????? ?????
     // INSERT INTO task (name, award, time, status, done) VALUES ('clean hous', 100, '19:40|04.05', 0, 0);
 
-    // обновить
+    // ????????
     // UPDATE task SET status = 1, done = 1 WHERE id = 1
 
     // SELECT name, award, time, child FROM task GROUP BY time
@@ -91,23 +93,25 @@ public class DB {
     public DB(Context ctx){
         mCtx = ctx;
     }
-    // открить подключение
     public void open(){
         mDBHelper = new DBHelper(mCtx, DB_NAME, null, DB_VERSION);
         mDB = mDBHelper.getWritableDatabase();
     }
-    // открить подключение
-    public void openRead(){
-        mDBHelper = new DBHelper(mCtx, DB_NAME, null, DB_VERSION);
-        mDB = mDBHelper.getReadableDatabase();
-    }
-
-    // закрить подлючение
     public void close(){
         if(mDBHelper!=null)
             mDBHelper.close();
     }
-    //---------------------------- робота с таблицей task-------------------------------------------
+
+
+    public Cursor mainSelect(int idChild){
+
+        String sqlQuery = "SELECT " + C_NAME + ", "+ C_AWARD + ", " + C_TIME +", " +
+                C_CHILD + " FROM " + DB_TASK +" WHERE " + C_CHILD + " = '" +
+                idChild  + "'";
+
+        return mDB.rawQuery(sqlQuery, null);
+    }
+    //---------------------------- task-------------------------------------------
 
     // C_ID + " integer primary key autoincrement, " +
     // C_NAME +   " text, " +
@@ -116,12 +120,12 @@ public class DB {
     // C_STATUS + " int, " +
     // C_DONE +   " int" +
     // C_CHILD +  " int" +
-    // получить все данные из таблицы DB_TASK
+    // ???????? ??? ?????? ?? ??????? DB_TASK
     public Cursor getAllData(){
         return mDB.query(DB_TASK, null, null, null, null, null, null);
     }
 
-    // добавить запись
+    // ???????? ??????
     public void addTask(String name, int award, String time, int status, int done, int child ) {
         ContentValues cv = new ContentValues();
         cv.put(C_NAME, name);
@@ -134,18 +138,18 @@ public class DB {
         Log.d(LOG_TAG, "row inserted, ID = " + rowID);
 
     }
-    //обновить инфу
+    //???????? ????
     public void updateTaskStatus(long id){
         ContentValues cv = new ContentValues();
         cv.put(C_STATUS, 1);
-        //обновляем по id
+        //????????? ?? id
         int updCount = mDB.update(DB_TASK, cv, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "updated rows count = " + updCount);
     }
     public void updateTaskDone(long id){
         ContentValues cv = new ContentValues();
         cv.put(C_DONE, 1);
-        //обновляем по id
+        //????????? ?? id
         int updCount = mDB.update(DB_TASK, cv, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "updated rows count = " + updCount);
     }
@@ -153,22 +157,18 @@ public class DB {
         ContentValues cv = new ContentValues();
         cv.put(C_STATUS, 0);
         cv.put(C_DONE, 0);
-        //обновляем по id
+        //????????? ?? id
         int updCount = mDB.update(DB_TASK, cv, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "updated rows count = " + updCount);
     }
 
-    public Cursor sortByTime() {
-        return mDB.query("mytable", null, null, null, C_TIME, null, null);
-    }
 
-
-    // удалить запись из TASK
+    // ??????? ?????? ?? TASK
     public void delTask(long id) {
         int clearCount =  mDB.delete(DB_TASK, C_ID + " = " + id, null);
         Log.d(LOG_TAG, "deleted rows count = " + clearCount);
     }
-    // -----------------------------------робота с таблицей CHILD----------------------------------
+    // -----------------------------------?????? ? ???????? CHILD----------------------------------
     // C_IDC     + " integer primary key autoincrement, " +
     // C_CLOGIN    + " text, " +
     // C_CEMAIL    + " text, " +
@@ -177,7 +177,7 @@ public class DB {
     // C_LEVL      + " int, "  +
     // C_PARENT    + " int, "  +
 
-    // добавить запись
+    // ???????? ??????
     public void addChild(String login, String email, String password, int parent ) {
         ContentValues cv = new ContentValues();
         cv.put(C_CLOGIN, login);
@@ -225,12 +225,12 @@ public class DB {
 
 
 
-    // --------------------------------робота с таблицей PARENT ------------------------------------
+    // --------------------------------?????? ? ???????? PARENT ------------------------------------
     // C_IDP +      " integer primary key autoincrement, " +
     // C_LOGIN +    " text, " +
     // C_EMAIL +    " text, " +
     // C_PASSWORD + " text, " +
-    // добавить запись
+    // ???????? ??????
     public void addParent(String login, String email, String password) {
         ContentValues cv = new ContentValues();
         cv.put(C_LOGIN, login);
@@ -269,19 +269,18 @@ public class DB {
 
     public void delAll(){
         Log.d(LOG_TAG, "--- Clear mytable: ---");
-        // удвляем id записb
+        // ??????? id ?????b
         mDB.delete(DB_TASK, null, null);
 
     }
 
-
-    // класс по созданию и управлению БД
     private class DBHelper extends SQLiteOpenHelper {
 
         public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                         int version) {
             super(context, name, factory, version);
         }
+
 
         @Override
         public void onOpen(SQLiteDatabase db) {
@@ -291,7 +290,6 @@ public class DB {
                 db.execSQL("PRAGMA foreign_keys=ON;");
             }
         }
-        // создаем и заполняем БД
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(DB_CREATECHILD);
